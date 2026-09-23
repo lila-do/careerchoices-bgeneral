@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Career Compass — Ideal Job Explorer</title>
+<style>
+  :root{
+    --ink:#111111;--paper:#f6f0e6;--red:#e53935;--blue:#1357d6;--yellow:#f4c430;--green:#1b8a5a;--muted:#666;--white:#fff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
+  .shell{max-width:980px;margin:0 auto;padding:24px}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:4px solid var(--ink);padding:8px 0 16px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .mark{width:42px;height:42px;background:var(--blue);border-radius:50%;position:relative}
+  .mark:after{content:"";position:absolute;width:18px;height:18px;background:var(--yellow);right:-5px;bottom:-5px}
+  h1{font-size:clamp(1.7rem,3vw,2.6rem);margin:0;line-height:1}
+  .tag{font-weight:700;background:var(--ink);color:white;padding:8px 12px;font-size:.85rem}
+  .card{background:rgba(255,255,255,.72);border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink);padding:28px;margin-top:30px}
+  .hero-grid{display:grid;grid-template-columns:1.5fr .8fr;gap:28px;align-items:center}
+  .hero-art{min-height:250px;position:relative;background:var(--yellow);border:3px solid var(--ink);overflow:hidden}
+  .hero-art .circle{position:absolute;width:140px;height:140px;border-radius:50%;background:var(--blue);left:28px;top:35px}
+  .hero-art .sq{position:absolute;width:115px;height:115px;background:var(--red);right:24px;bottom:25px;transform:rotate(10deg)}
+  .hero-art .line{position:absolute;height:20px;width:80%;background:var(--ink);left:10%;top:50%;transform:rotate(-22deg)}
+  h2{font-size:2rem;margin:0 0 12px}.lead{font-size:1.15rem;line-height:1.55}.small{font-size:.9rem;color:var(--muted);line-height:1.45}
+  button{appearance:none;border:3px solid var(--ink);background:var(--ink);color:#fff;font-weight:800;font-size:1rem;padding:13px 18px;cursor:pointer;box-shadow:4px 4px 0 var(--blue)}
+  button.secondary{background:#fff;color:var(--ink);box-shadow:4px 4px 0 var(--yellow)}
+  button:focus{outline:4px solid rgba(19,87,214,.25);outline-offset:2px}
+  .hidden{display:none!important}
+  .progress-wrap{margin:8px 0 24px}.progress-label{display:flex;justify-content:space-between;font-weight:800;font-size:.85rem}.bar{height:14px;background:#ddd;border:2px solid var(--ink);margin-top:7px}.bar>div{height:100%;background:var(--blue);width:0%;transition:.25s}
+  .section-chip{display:inline-block;background:var(--yellow);border:2px solid var(--ink);padding:6px 10px;font-weight:900;margin-bottom:12px}
+  .question{font-size:clamp(1.45rem,3vw,2.1rem);font-weight:850;line-height:1.25;margin:4px 0 22px}
+  .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .option{border:3px solid var(--ink);background:#fff;padding:14px 8px;text-align:center;font-weight:750;cursor:pointer;min-height:92px;display:flex;flex-direction:column;justify-content:center;gap:6px;transition:.15s}
+  .option:hover{transform:translateY(-3px);box-shadow:4px 4px 0 var(--ink)}
+  .option.selected{background:var(--blue);color:white;box-shadow:4px 4px 0 var(--ink)}
+  .option .n{font-size:1.35rem;font-weight:900}.option .lbl{font-size:.82rem}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .result-box{border:3px solid var(--ink);background:#fff;padding:20px}.result-box h3{font-size:1.25rem;margin:0 0 12px}
+  .score-row{display:grid;grid-template-columns:120px 1fr 42px;gap:10px;align-items:center;margin:10px 0}.meter{height:18px;border:2px solid var(--ink);background:#eee}.meter span{display:block;height:100%;background:var(--red)}
+  .value-meter span{background:var(--green)}
+  .badge{display:inline-block;border:2px solid var(--ink);background:var(--yellow);padding:7px 9px;margin:4px 4px 4px 0;font-weight:800}
+  .jobs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.job{border:2px solid var(--ink);padding:12px;background:#fff;font-weight:700}
+  .prompt{background:var(--blue);color:white;padding:18px;border:3px solid var(--ink);margin-top:18px;line-height:1.5}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+  .footer{font-size:.78rem;color:#555;border-top:2px solid var(--ink);margin-top:30px;padding-top:12px;line-height:1.4}
+  .print-only{display:none}
+  @media(max-width:760px){.hero-grid,.result-grid{grid-template-columns:1fr}.hero-art{min-height:180px}.scale{grid-template-columns:1fr}.option{min-height:auto;flex-direction:row;justify-content:flex-start;padding:12px 16px}.jobs{grid-template-columns:1fr}.score-row{grid-template-columns:100px 1fr 38px}.tag{display:none}}
+  @media print{body{background:#fff}.shell{max-width:none;padding:0}.no-print,header,.footer{display:none!important}.card{border:0;box-shadow:none;margin:0;padding:0}.print-only{display:block}.result-grid{grid-template-columns:1fr 1fr}.jobs{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header><div class="brand"><div class="mark"></div><div><h1>Career Compass</h1><div class="small">Ideal Job Explorer · Senior High School</div></div></div><div class="tag">INDIVIDUAL PROJECT</div></header>
+
+<section id="intro" class="card">
+  <div class="hero-grid">
+    <div>
+      <span class="section-chip">START HERE</span>
+      <h2>What kind of work could feel right for you?</h2>
+      <p class="lead">Explore two things: <b>what naturally interests you</b> and <b>what you want your work to stand for</b>. Your result is a career hypothesis — not a label and not a final decision.</p>
+      <p class="small">There are 42 quick statements. Rate each from 1 (not like me) to 5 (very much like me). Answer honestly, not according to what you think sounds impressive.</p>
+      <div class="actions"><button id="startBtn">Start the quiz</button></div>
+    </div>
+    <div class="hero-art" aria-hidden="true"><div class="circle"></div><div class="sq"></div><div class="line"></div></div>
+  </div>
+</section>
+
+<section id="quiz" class="card hidden">
+  <div class="progress-wrap">
+    <div class="progress-label"><span id="progressText">Question 1 of 42</span><span id="pctText">0%</span></div>
+    <div class="bar"><div id="progressBar"></div></div>
+  </div>
+  <span id="sectionChip" class="section-chip">INTERESTS</span>
+  <div id="questionText" class="question"></div>
+  <div class="scale" id="scale"></div>
+  <div class="nav no-print"><button class="secondary" id="backBtn">← Back</button><button id="nextBtn">Next →</button></div>
+</section>
+
+<section id="results" class="card hidden">
+  <span class="section-chip">YOUR CAREER COMPASS</span>
+  <h2>Your results</h2>
+  <p class="lead" id="summaryLine"></p>
+  <div class="result-grid">
+    <div class="result-box"><h3>1. Interest worlds</h3><div id="interestScores"></div></div>
+    <div class="result-box"><h3>2. Work values / calling</h3><div id="valueScores"></div></div>
+  </div>
+  <div class="result-box" style="margin-top:22px">
+    <h3>3. Your strongest combination</h3>
+    <div id="badges"></div>
+    <p id="comboText" style="line-height:1.6"></p>
+    <div class="prompt"><b>Your career question:</b><br><span id="careerQuestion"></span></div>
+  </div>
+  <div class="result-box" style="margin-top:22px">
+    <h3>4. Job families worth exploring</h3>
+    <p class="small">These are starting points, not prescriptions. Circle or copy the three that make you most curious.</p>
+    <div id="jobs" class="jobs"></div>
+  </div>
+  <div class="result-box" style="margin-top:22px">
+    <h3>5. Your next step</h3>
+    <p>Use the writing worksheet to test your results against real evidence: subjects you enjoy, activities you choose voluntarily, strengths other people notice, work conditions you value, and actual career research.</p>
+  </div>
+  <div class="actions no-print"><button onclick="window.print()">Print / Save results</button><button class="secondary" id="restartBtn">Restart</button></div>
+  <div class="footer">This classroom explorer is inspired by widely used interest-and-work-value approaches. It is designed for reflection and discussion, not for psychological diagnosis or high-stakes career selection.<br><br>Evangelia Domvrou / Teacher of English Language and Literature</div>
+</section>
+</div>
+<script>
+const questions = [
+  // BUILDERS
+  {s:'interest',k:'Builders',t:'I enjoy fixing, assembling, or improving physical things.'},
+  {s:'interest',k:'Builders',t:'I would rather learn by doing than only by reading about something.'},
+  {s:'interest',k:'Builders',t:'I like tools, equipment, technology, sport, or practical tasks.'},
+  {s:'interest',k:'Builders',t:'I enjoy seeing a concrete result at the end of my work.'},
+  {s:'interest',k:'Builders',t:'I would be comfortable working outdoors, in a lab, workshop, site, or active environment.'},
+  // INVESTIGATORS
+  {s:'interest',k:'Investigators',t:'I enjoy solving difficult problems even when the answer is not obvious.'},
+  {s:'interest',k:'Investigators',t:'I often ask “why?” and want to understand how things really work.'},
+  {s:'interest',k:'Investigators',t:'I like analysing information, patterns, evidence, or data.'},
+  {s:'interest',k:'Investigators',t:'I enjoy science, research, coding, strategy, or complex puzzles.'},
+  {s:'interest',k:'Investigators',t:'I can stay focused on a question for a long time if it interests me.'},
+  // CREATORS
+  {s:'interest',k:'Creators',t:'I enjoy inventing, designing, writing, performing, or making original things.'},
+  {s:'interest',k:'Creators',t:'I notice style, language, images, sound, or the way ideas are presented.'},
+  {s:'interest',k:'Creators',t:'I prefer tasks with room for imagination rather than one fixed answer.'},
+  {s:'interest',k:'Creators',t:'I like expressing ideas in a personal or unusual way.'},
+  {s:'interest',k:'Creators',t:'I often think of several possible ways to approach the same task.'},
+  // CONNECTORS
+  {s:'interest',k:'Connectors',t:'I get energy from helping, teaching, guiding, or supporting other people.'},
+  {s:'interest',k:'Connectors',t:'I am interested in how people think, feel, learn, or communicate.'},
+  {s:'interest',k:'Connectors',t:'I would like work where listening and understanding matter.'},
+  {s:'interest',k:'Connectors',t:'I enjoy explaining ideas so that other people can understand them.'},
+  {s:'interest',k:'Connectors',t:'I want my work to improve someone’s experience, wellbeing, or opportunities.'},
+  // LEADERS
+  {s:'interest',k:'Leaders',t:'I enjoy persuading people, pitching ideas, or getting others excited about a plan.'},
+  {s:'interest',k:'Leaders',t:'I am comfortable taking initiative when a group needs direction.'},
+  {s:'interest',k:'Leaders',t:'I like setting goals, making decisions, and taking responsibility for results.'},
+  {s:'interest',k:'Leaders',t:'I enjoy competition, negotiation, entrepreneurship, or organising people around an idea.'},
+  {s:'interest',k:'Leaders',t:'I would enjoy representing a team, product, cause, or organisation.'},
+  // ORGANIZERS
+  {s:'interest',k:'Organizers',t:'I like making plans, schedules, systems, lists, or clear procedures.'},
+  {s:'interest',k:'Organizers',t:'I notice details and usually want information to be accurate.'},
+  {s:'interest',k:'Organizers',t:'I enjoy bringing order to complicated information or busy situations.'},
+  {s:'interest',k:'Organizers',t:'I like work where progress can be tracked and responsibilities are clear.'},
+  {s:'interest',k:'Organizers',t:'I am comfortable with documents, numbers, logistics, or step-by-step tasks.'},
+  // VALUES
+  {s:'value',k:'Impact',t:'It matters to me that my work makes a positive difference beyond myself.'},
+  {s:'value',k:'Impact',t:'I would accept some difficulty if I strongly believed in the purpose of the work.'},
+  {s:'value',k:'Freedom',t:'I want some control over how, when, or where I work.'},
+  {s:'value',k:'Freedom',t:'I value independence and the chance to make my own choices.'},
+  {s:'value',k:'Security',t:'A predictable income and stable employment are important to me.'},
+  {s:'value',k:'Security',t:'I prefer a clear career path and reliable working conditions.'},
+  {s:'value',k:'Mastery',t:'I want a job where I can become highly skilled and keep learning.'},
+  {s:'value',k:'Mastery',t:'I am motivated by challenge and by improving my expertise over time.'},
+  {s:'value',k:'Creativity',t:'I want room to create, experiment, or bring new ideas into my work.'},
+  {s:'value',k:'Creativity',t:'Doing the same thing in the same way every day would frustrate me.'},
+  {s:'value',k:'Connection',t:'Feeling part of a supportive team or community matters to me.'},
+  {s:'value',k:'Connection',t:'I want regular contact with people rather than working mostly alone.'}
+];
+const interestDescriptions={
+ Builders:'hands-on, practical, active and concrete work',
+ Investigators:'questions, evidence, analysis and complex problem-solving',
+ Creators:'imagination, expression, design and original ideas',
+ Connectors:'people, communication, support, teaching and wellbeing',
+ Leaders:'initiative, influence, decision-making and ambitious goals',
+ Organizers:'structure, accuracy, systems, planning and reliable processes'
+};
+const valueDescriptions={
+ Impact:'meaning and positive contribution', Freedom:'independence and flexibility', Security:'stability and predictability',
+ Mastery:'learning, expertise and challenge', Creativity:'originality and experimentation', Connection:'belonging and strong human relationships'
+};
+const jobs={
+ Builders:['Mechanical / civil engineering','Architecture & construction','Renewable-energy technician','Product / industrial design','Sports & fitness careers','Environmental fieldwork','Skilled technical trades','Emergency services'],
+ Investigators:['Medicine & health science','Scientific research','Data science / AI','Cybersecurity','Psychology research','Economics / analytics','Software engineering','Forensic science'],
+ Creators:['Graphic / UX design','Film & media production','Writing / journalism','Advertising & branding','Game design','Architecture','Music / performance','Content strategy'],
+ Connectors:['Teaching & education','Psychology / counselling','Medicine & nursing','Social work','Human resources','Speech / language careers','Coaching','Community programmes'],
+ Leaders:['Entrepreneurship','Business development','Marketing & sales','Law','Project leadership','Event management','Public relations','Hospitality management'],
+ Organizers:['Finance & accounting','Operations management','Logistics & supply chain','Project coordination','Business analytics','Quality assurance','Administration','Information management']
+};
+let answers=new Array(questions.length).fill(null), index=0;
+const intro=document.getElementById('intro'), quiz=document.getElementById('quiz'), results=document.getElementById('results');
+const qText=document.getElementById('questionText'), scale=document.getElementById('scale'), backBtn=document.getElementById('backBtn'), nextBtn=document.getElementById('nextBtn');
+const labels=['Not like me','A little like me','Sometimes','Mostly like me','Very much like me'];
+function showQuestion(){
+ const q=questions[index]; document.getElementById('sectionChip').textContent=q.s==='interest'?'PART 1 · INTERESTS':'PART 2 · WHAT MATTERS TO ME'; qText.textContent=q.t;
+ const pct=Math.round((index/questions.length)*100); document.getElementById('progressText').textContent=`Question ${index+1} of ${questions.length}`; document.getElementById('pctText').textContent=`${pct}%`; document.getElementById('progressBar').style.width=`${pct}%`;
+ scale.innerHTML=''; for(let i=1;i<=5;i++){const d=document.createElement('div');d.className='option'+(answers[index]===i?' selected':'');d.innerHTML=`<div class="n">${i}</div><div class="lbl">${labels[i-1]}</div>`;d.onclick=()=>{answers[index]=i;showQuestion();};scale.appendChild(d)}
+ backBtn.disabled=index===0; backBtn.style.opacity=index===0?.4:1; nextBtn.textContent=index===questions.length-1?'See my results →':'Next →';
+}
+function score(){
+ const ints={}, vals={}; questions.forEach((q,i)=>{const target=q.s==='interest'?ints:vals;target[q.k]=(target[q.k]||0)+(answers[i]||0)});
+ return {ints,vals};
+}
+function sorted(obj){return Object.entries(obj).sort((a,b)=>b[1]-a[1])}
+function renderMeters(targetId, obj, max, cls=''){
+ const el=document.getElementById(targetId);el.innerHTML='';sorted(obj).forEach(([k,v])=>{const row=document.createElement('div');row.className='score-row';row.innerHTML=`<b>${k}</b><div class="meter ${cls}"><span style="width:${(v/max)*100}%"></span></div><b>${v}</b>`;el.appendChild(row)})
+}
+function finish(){
+ if(answers.some(a=>a===null)){alert('Please answer every statement before viewing your results.');return}
+ const {ints,vals}=score(), si=sorted(ints), sv=sorted(vals), topI=si[0][0], secondI=si[1][0], topV=sv[0][0], secondV=sv[1][0];
+ document.getElementById('summaryLine').innerHTML=`You are most strongly drawn to <b>${topI}</b> work, with <b>${secondI}</b> as a second interest world. Your strongest work values are <b>${topV}</b> and <b>${secondV}</b>.`;
+ renderMeters('interestScores',ints,25);renderMeters('valueScores',vals,10,'value-meter');
+ document.getElementById('badges').innerHTML=`<span class="badge">${topI}</span><span class="badge">${secondI}</span><span class="badge">${topV}</span><span class="badge">${secondV}</span>`;
+ document.getElementById('comboText').innerHTML=`You may be energised by <b>${interestDescriptions[topI]}</b>, while also wanting <b>${valueDescriptions[topV]}</b>. Your second scores matter too: ${secondI.toLowerCase()} interests and ${secondV.toLowerCase()} values may shape the kind of workplace, role or speciality that feels right.`;
+ document.getElementById('careerQuestion').textContent=`Where could I combine ${topI.toLowerCase()} work with ${topV.toLowerCase()} — while still making room for my ${secondI.toLowerCase()} side and my need for ${secondV.toLowerCase()}?`;
+ const merged=[...new Set([...jobs[topI].slice(0,5),...jobs[secondI].slice(0,4)])].slice(0,9);document.getElementById('jobs').innerHTML=merged.map(j=>`<div class="job">${j}</div>`).join('');
+ quiz.classList.add('hidden');results.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});localStorage.setItem('careerCompassAnswers',JSON.stringify(answers));
+}
+document.getElementById('startBtn').onclick=()=>{intro.classList.add('hidden');quiz.classList.remove('hidden');showQuestion()};
+backBtn.onclick=()=>{if(index>0){index--;showQuestion()}};
+nextBtn.onclick=()=>{if(answers[index]===null){alert('Choose a response before continuing.');return} if(index<questions.length-1){index++;showQuestion()}else finish()};
+document.getElementById('restartBtn').onclick=()=>{if(confirm('Restart and clear your answers?')){answers=new Array(questions.length).fill(null);index=0;localStorage.removeItem('careerCompassAnswers');results.classList.add('hidden');intro.classList.remove('hidden');window.scrollTo(0,0)}};
+const saved=localStorage.getItem('careerCompassAnswers'); if(saved){try{const a=JSON.parse(saved);if(Array.isArray(a)&&a.length===questions.length)answers=a}catch(e){}}
+</script>
+</body>
+</html>
